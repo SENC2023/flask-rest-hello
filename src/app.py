@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Characters, Planets, Vehicles
 #from models import Person
 
 app = Flask(__name__)
@@ -37,13 +37,67 @@ def sitemap():
     return generate_sitemap(app)
 
 @app.route('/user', methods=['GET'])
-def handle_hello():
+def get_all_users():
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+    query_users = User.query.all()
+    results_users = list(map(lambda item: item.serialize(), query_users))
 
-    return jsonify(response_body), 200
+    if query_users == []:
+        return jsonify({"msg":"Users not found"}), 404
+    else:
+        return jsonify(results_users), 200
+
+@app.route('/characters', methods=['GET'])
+def get_all_characters():
+
+    query_characters = Characters.query.all()
+    results_characters = list(map(lambda item: item.serialize(), query_characters))
+
+    if query_characters == []:
+        return jsonify({"msg":"Characters not found"}), 404
+    else:
+        return jsonify(results_characters), 200
+
+
+@app.route('/characters/<int:characters_id>', methods=['GET'])
+def get_id_character(characters_id):
+
+    character_query = Characters.query.filter_by(id=characters_id).first()
+
+    if character_query == None:
+        return jsonify({"msg":"Character not found"}), 404
+    else:
+        return jsonify(character_query.serialize()), 200
+    
+@app.route('/planets', methods=['GET'])
+def get_all_planets():
+
+    query_planets = Planets.query.all()
+    results_planets = list(map(lambda item: item.serialize(), query_planets))
+
+    if query_planets == []:
+        return jsonify({"msg":"Planets not found"}), 404
+    else:
+        return jsonify(results_planets), 200
+    
+@app.route('/planets/<int:planets_id>', methods=['GET'])
+def get_id_planet(planets_id):
+
+    planet_query = Planets.query.filter_by(id=planets_id).first()
+
+    if planet_query == None:
+        return jsonify({"msg":"Planet not found"}), 404
+    else:
+        return jsonify(planet_query.serialize()), 200
+
+# @app.route('/vehicles', methods=['GET'])
+# def handle_hello():
+
+#     response_body = {
+#         "msg": "Hello, this is your GET /user response "
+#     }
+
+#     return jsonify(response_body), 200
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

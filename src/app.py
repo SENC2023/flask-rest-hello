@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User, Characters, Planets, Vehicles
+from models import db, User, Characters, Planets, Vehicles, FavoriteCharacters, FavoritePlanets, FavoriteVehicles
 #from models import Person
 
 app = Flask(__name__)
@@ -90,14 +90,37 @@ def get_id_planet(planets_id):
     else:
         return jsonify(planet_query.serialize()), 200
 
-# @app.route('/vehicles', methods=['GET'])
-# def handle_hello():
+@app.route('/vehicles', methods=['GET'])
+def get_all_vehicles():
 
-#     response_body = {
-#         "msg": "Hello, this is your GET /user response "
-#     }
+    query_vehicles = Vehicles.query.all()
+    results_vehicles = list(map(lambda item: item.serialize(), query_vehicles))
 
-#     return jsonify(response_body), 200
+    if query_vehicles == []:
+        return jsonify({"msg":"Vehicles not found"}), 404
+    else:
+        return jsonify(results_vehicles), 200
+    
+@app.route('/vehicles/<int:vehicles_id>', methods=['GET'])
+def get_id_vehicle(vehicles_id):
+
+    vehicle_query = Vehicles.query.filter_by(id=vehicles_id).first()
+
+    if vehicle_query == None:
+        return jsonify({"msg":"Vehicle not found"}), 404
+    else:
+        return jsonify(vehicle_query.serialize()), 200
+    
+@app.route('/user/favorites', methods=['GET'])
+def get_all_favorites_user():
+
+    query_favorite_characters = FavoriteCharacters.query.all()
+    results_favorite_characters = list(map(lambda item: item.serialize(), query_favorite_characters))
+    
+    if results_favorite_characters == []:
+        return jsonify({"msg":"Vehicles not found"}), 404
+    else:
+        return jsonify(results_favorite_characters), 200
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':

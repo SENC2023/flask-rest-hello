@@ -109,8 +109,8 @@ class Vehicles(db.Model):
 class FavoriteCharacters(db.Model):
     __tablename__ = 'favorite_characters'
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.Integer, db.ForeignKey('user.id'))
-    characters = db.Column(db.Integer, db.ForeignKey('characters.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    character_id = db.Column(db.Integer, db.ForeignKey('characters.id'))
 
     def __repr__(self):
         return '<FavoriteCharacters %r>' % self.id
@@ -125,8 +125,8 @@ class FavoriteCharacters(db.Model):
 class FavoritePlanets(db.Model):
     __tablename__ = 'favorite_planets'
     id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.Integer, db.ForeignKey('user.id'))
-    planets = db.Column(db.Integer, db.ForeignKey('planets.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    planet_id = db.Column(db.Integer, db.ForeignKey('planets.id'))
 
     def __repr__(self):
         return '<FavoritePlanets %r>' % self.id
@@ -134,8 +134,8 @@ class FavoritePlanets(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "user": self.user,
-            "planets": self.planets,
+            "user_id": self.user,
+            "planet_id": self.planets,
         }
     
 class FavoriteVehicles(db.Model):
